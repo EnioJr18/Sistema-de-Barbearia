@@ -19,7 +19,7 @@ public class Servico {
     private Long id;
 
     @Column(nullable = false)
-    private String nomeDoServico;
+    private String nome;
 
     @Column(nullable = false)
     private String descricao;
