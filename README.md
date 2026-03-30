@@ -28,10 +28,10 @@ Aqui é o sistema de gestão que vai rodar no computador ou tablet da barbearia.
 A beleza de separar o Front do Back é que o Deivinho não vai precisar calcular nada disso. Ele só vai pedir os dados para a sua API, e o seu código Java fará o trabalho pesado. Suas principais funcionalidades invisíveis serão:
 
 * **Algoritmo de Horários Disponíveis:** Essa é a funcionalidade mais desafiadora e legal de programar. Quando o app pedir os horários do dia 15, o seu código vai ter que:
-1. Ver a hora que a barbearia abre e fecha (ex: 09h às 18h).
-2. Pegar a ```duracaoEmMinutos``` do serviço escolhido.
-3. Olhar no banco de dados os ```Agendamentos``` que já existem para aquele dia.
-4. Subtrair os horários ocupados e devolver para o Front apenas os blocos de tempo que sobraram.
+  1. Ver a hora que a barbearia abre e fecha (ex: 09h às 18h).
+  2. Pegar a ```duracaoEmMinutos``` do serviço escolhido.
+  3. Olhar no banco de dados os ```Agendamentos``` que já existem para aquele dia.
+  4. Subtrair os horários ocupados e devolver para o Front apenas os blocos de tempo que sobraram.
 * **Proteção contra Concorrência:** Se dois clientes abrirem o app ao mesmo tempo e tentarem marcar sexta-feira às 19h com o mesmo barbeiro, a sua API tem que deixar o primeiro passar e travar o segundo, avisando que o horário acabou de ser preenchido.
 * **Segurança de Rotas:** Garantir, usando o Token JWT, que um cliente comum não consiga mandar uma requisição para a rota de deletar um serviço ou ver o faturamento do dia.
 
@@ -154,6 +154,6 @@ O desenvolvimento está dividido em duas frentes principais:
 
 Desenvolvido para fins de estudo e portfólio 💻
 
-📧 Entre em contato: eniojr100@gmail.com
-🔗 LinkedIn: https://www.linkedin.com/in/enioeduardojr/
-📷 Instagram: https://www.instagram.com/enio_juniorrr/
+📧 Entre em contato: eniojr100@gmail.com <br>
+🔗 LinkedIn: https://www.linkedin.com/in/enioeduardojr/ <br>
+📷 Instagram: https://www.instagram.com/enio_juniorrr/ <br>
