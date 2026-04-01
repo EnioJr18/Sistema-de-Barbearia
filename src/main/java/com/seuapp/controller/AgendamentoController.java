@@ -2,6 +2,7 @@ package com.seuapp.controller;
 
 import com.seuapp.model.Agendamento;
 import com.seuapp.repository.AgendamentoRepository;
+import com.seuapp.service.AgendamentoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,15 +14,19 @@ import java.util.List;
 public class AgendamentoController {
 
     private final AgendamentoRepository agendamentoRepository;
+    private final  AgendamentoService agendamentoService;
 
     @GetMapping
-    public List<Agendamento> listarTodos() {
+    public List<Agendamento> listar(@RequestParam(required = false) Long barbeiroId) {
+        if (barbeiroId != null) {
+            return agendamentoRepository.findByBarbeiroId(barbeiroId);
+        }
         return agendamentoRepository.findAll();
     }
 
     @PostMapping
     public Agendamento cadastrar(@RequestBody Agendamento agendamento) {
-        return agendamentoRepository.save(agendamento);
+        return agendamentoService.agendar(agendamento);
     }
 
     @GetMapping("/{id}")
@@ -49,6 +54,4 @@ public class AgendamentoController {
                 })
                 .orElse(null);
     }
-
-
 }
