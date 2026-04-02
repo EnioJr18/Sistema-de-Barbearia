@@ -1,5 +1,6 @@
 package com.seuapp.controller;
 
+import com.seuapp.dto.UsuarioResponseDTO;
 import com.seuapp.model.Usuario;
 import com.seuapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,20 +14,45 @@ import java.util.List;
 public class UsuarioController {
 
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioResponseDTO usuarioResponseDTO;
 
     @GetMapping
-    public List<Usuario> listarTodos() {
-        return usuarioRepository.findAll();
+    public List<UsuarioResponseDTO> listarTodos() {
+        return usuarioRepository.findAll().stream()
+                .map(usuario -> {
+                    UsuarioResponseDTO dto = new UsuarioResponseDTO();
+                    dto.setId(usuario.getId());
+                    dto.setNome(usuario.getNome());
+                    dto.setEmail(usuario.getEmail());
+                    dto.setPerfil(usuario.getPerfil());
+                    return dto;
+                })
+                .toList();
     }
 
     @PostMapping
-    public Usuario cadastrar(@RequestBody Usuario usuario) {
-        return usuarioRepository.save(usuario);
+    public UsuarioResponseDTO cadastrar(@RequestBody Usuario usuario) {
+        Usuario usuarioSalvo = usuarioRepository.save(usuario);
+        UsuarioResponseDTO dto = new UsuarioResponseDTO();
+        dto.setId(usuarioSalvo.getId());
+        dto.setNome(usuarioSalvo.getNome());
+        dto.setEmail(usuarioSalvo.getEmail());
+        dto.setPerfil(usuarioSalvo.getPerfil());
+        return dto;
     }
 
     @GetMapping("/{id}")
-    public Usuario buscarPorId(@PathVariable Long id) {
-        return usuarioRepository.findById(id).orElse(null);
+    public UsuarioResponseDTO buscarPorId(@PathVariable Long id) {
+        return usuarioRepository.findById(id)
+                .map(usuario -> {
+                    UsuarioResponseDTO dto = new UsuarioResponseDTO();
+                    dto.setId(usuario.getId());
+                    dto.setNome(usuario.getNome());
+                    dto.setEmail(usuario.getEmail());
+                    dto.setPerfil(usuario.getPerfil());
+                    return dto;
+                })
+                .orElse(null);
     }
 
     @DeleteMapping("/{id}")
