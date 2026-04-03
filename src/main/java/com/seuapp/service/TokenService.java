@@ -34,4 +34,17 @@ public class TokenService {
     private Instant gerarDataExpiracao() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
+
+    public String getSubject(String tokenJWT) {
+        try {
+            com.auth0.jwt.algorithms.Algorithm algoritmo = com.auth0.jwt.algorithms.Algorithm.HMAC256(secret);
+            return com.auth0.jwt.JWT.require(algoritmo)
+                    .withIssuer("Barbearia API")
+                    .build()
+                    .verify(tokenJWT)
+                    .getSubject();
+        } catch (com.auth0.jwt.exceptions.JWTVerificationException exception) {
+            throw new RuntimeException("Token JWT inválido ou expirado!");
+        }
+    }
 }

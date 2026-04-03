@@ -1,5 +1,6 @@
 package com.seuapp.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,26 +13,28 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private SecurityFilter securityFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 // 1. Desliga uma proteção de formulários HTML
                 .csrf(csrf -> csrf.disable())
 
-                // 2. Avisa que não vamos guardar "sessão" na memória (o Porteiro vai exigir o crachá JWT em cada pedido)
+                // 2. Avisa que não vamos guardar "sessão" na memória
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 // 3. AS REGRAS DA PORTA!
                 .authorizeHttpRequests(authorize -> authorize
-                        // Libera o cadastro de novos usuários (qualquer um pode criar uma conta)
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
-
-                        // Libera uma futura rota de login (que vamos criar daqui a pouco)
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
-
-                        // Exige o crachá JWT para TODO O RESTO (listar serviços, agendar, deletar, etc)
                         .anyRequest().authenticated()
                 )
+
+                // 4. Entregamos o leitor de crachá para o Porteiro (Direto no 'http')
+                .addFilterBefore(securityFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
+
                 .build();
     }
 
