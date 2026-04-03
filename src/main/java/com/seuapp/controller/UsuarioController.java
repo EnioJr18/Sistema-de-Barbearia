@@ -4,6 +4,7 @@ import com.seuapp.dto.UsuarioResponseDTO;
 import com.seuapp.model.Usuario;
 import com.seuapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,8 +15,7 @@ import java.util.List;
 public class UsuarioController {
 
     private final UsuarioRepository usuarioRepository;
-    private final UsuarioResponseDTO usuarioResponseDTO;
-
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
     @GetMapping
     public List<UsuarioResponseDTO> listarTodos() {
         return usuarioRepository.findAll().stream()
@@ -32,12 +32,17 @@ public class UsuarioController {
 
     @PostMapping
     public UsuarioResponseDTO cadastrar(@RequestBody Usuario usuario) {
+        String senhaTriturada = passwordEncoder.encode(usuario.getSenha());
+        usuario.setSenha(senhaTriturada);
+
         Usuario usuarioSalvo = usuarioRepository.save(usuario);
+
         UsuarioResponseDTO dto = new UsuarioResponseDTO();
         dto.setId(usuarioSalvo.getId());
         dto.setNome(usuarioSalvo.getNome());
         dto.setEmail(usuarioSalvo.getEmail());
         dto.setPerfil(usuarioSalvo.getPerfil());
+
         return dto;
     }
 
