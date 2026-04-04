@@ -1,11 +1,14 @@
 package com.seuapp.controller;
 
+import com.seuapp.dto.ServicoResponseDTO;
 import com.seuapp.model.Servico;
 import com.seuapp.repository.ServicoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/servicos")
@@ -15,8 +18,25 @@ public class ServicoController {
     private final ServicoRepository servicoRepository;
 
     @GetMapping
-    public List<Servico> listarTodos() {
-        return servicoRepository.findAll();
+    public Page<ServicoResponseDTO> listarTodos(@PageableDefault(size = 10) Pageable pageable,
+                                                @RequestParam(required = false) String nome) {
+        Page<Servico> paginaDeServicos;
+
+        if (nome != null) {
+            paginaDeServicos = servicoRepository.findByNomeContainingIgnoreCase(nome, pageable);
+        }
+        else {
+            paginaDeServicos = servicoRepository.findAll(pageable);
+        }
+        return paginaDeServicos.map(servico -> {
+            ServicoResponseDTO dto = new ServicoResponseDTO();
+            dto.setId(servico.getId());
+            dto.setNome(servico.getNome());
+            dto.setDescricao(servico.getDescricao());
+            dto.setPreco(servico.getPreco());
+            dto.setDuracaoEmMinutos(servico.getDuracaoEmMinutos());
+            return dto;
+        });
     }
 
     @PostMapping

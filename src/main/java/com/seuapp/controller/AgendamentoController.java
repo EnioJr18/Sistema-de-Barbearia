@@ -1,12 +1,15 @@
 package com.seuapp.controller;
 
+import com.seuapp.dto.AgendamentoResponseDTO;
 import com.seuapp.model.Agendamento;
 import com.seuapp.repository.AgendamentoRepository;
 import com.seuapp.service.AgendamentoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/agendamentos")
@@ -17,11 +20,26 @@ public class AgendamentoController {
     private final  AgendamentoService agendamentoService;
 
     @GetMapping
-    public List<Agendamento> listar(@RequestParam(required = false) Long barbeiroId) {
+    public Page<AgendamentoResponseDTO> listar(@RequestParam(required = false) Long barbeiroId,
+                                               @RequestParam(required = false) String nomeCliente,
+                                               @PageableDefault(size = 10) Pageable pageable) {
+
+        Page<Agendamento> paginaDeAgendamentos;
         if (barbeiroId != null) {
-            return agendamentoRepository.findByBarbeiroId(barbeiroId);
+            paginaDeAgendamentos = agendamentoRepository.findByBarbeiroId(barbeiroId, pageable);
         }
-        return agendamentoRepository.findAll();
+        else if (nomeCliente != null) {
+        paginaDeAgendamentos = agendamentoRepository.findByCliente_NomeContainingIgnoreCase(nomeCliente, pageable);
+
+        } else {
+            paginaDeAgendamentos = agendamentoRepository.findAll(pageable);
+        }
+        return paginaDeAgendamentos.map(agendamento -> {
+            AgendamentoResponseDTO dto = new AgendamentoResponseDTO();
+            dto.setNomeCliente(agendamento.getCliente().getNome());
+            dto.setNomeServico(agendamento.getServico().getNome());
+            return dto;
+        });
     }
 
     @PostMapping
