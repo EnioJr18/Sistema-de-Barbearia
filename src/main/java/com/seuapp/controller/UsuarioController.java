@@ -8,9 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -74,6 +73,7 @@ public class UsuarioController {
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deletar(@PathVariable Long id) {
         usuarioRepository.deleteById(id);
