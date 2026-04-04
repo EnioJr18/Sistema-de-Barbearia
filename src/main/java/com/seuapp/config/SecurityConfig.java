@@ -19,20 +19,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                // 1. Desliga uma proteção de formulários HTML
+                // 1. Liga o CORS usando as configurações globais
+                .cors(org.springframework.security.config.Customizer.withDefaults())
+
+                // 2. Desliga uma proteção de formulários HTML
                 .csrf(csrf -> csrf.disable())
 
-                // 2. Avisa que não vamos guardar "sessão" na memória
+                // 3. Avisando que não vamos guardar "sessão" na memória
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // 3. AS REGRAS DA PORTA!
+                // 4. AS REGRAS DA PORTA!
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .anyRequest().authenticated()
                 )
 
-                // 4. Entregamos o leitor de crachá para o Porteiro (Direto no 'http')
                 .addFilterBefore(securityFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
 
                 .build();
