@@ -3,6 +3,7 @@ package com.seuapp.controller;
 import com.seuapp.dto.UsuarioResponseDTO;
 import com.seuapp.model.Usuario;
 import com.seuapp.repository.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -70,7 +71,7 @@ public class UsuarioController {
                     dto.setPerfil(usuario.getPerfil());
                     return dto;
                 })
-                .orElse(null);
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
     }
 
     @DeleteMapping("/{id}")
