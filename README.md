@@ -1,15 +1,23 @@
 # 💈 Sistema de Gerenciamento de Barbearia 
 
-Este é um projeto *fullstack* de um sistema de agendamento e gerenciamento para barbearias, composto por uma API RESTful no backend, um painel administrativo na Web e um aplicativo Mobile para os clientes. 
+![Status](https://img.shields.io/badge/Status-Em_Desenvolvimento-yellow)
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![React](https://img.shields.io/badge/React-19-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 
-O objetivo do MVP (Produto Mínimo Viável) é garantir que o cliente consegue agendar um horário, e o barbeiro consegue ver a sua agenda e mudar o status do corte para "concluído".
+## 📖 Sobre o Projeto
 
+Este é um sistema Fullstack completo para o gerenciamento de serviços, usuários e agendamentos de uma barbearia/clínica. O projeto nasceu de uma arquitetura colaborativa e está dividido em dois microssistemas independentes que se comunicam via API REST.
+
+- **Back-end (API):** Construído para ser um "cofre" seguro e escalável. Responsável por blindar as regras de negócio, gerenciar o banco de dados e garantir que as informações só cheguem a quem tem o nível de acesso correto.
+- **Front-end (SPA):** Construído para ser a interface interativa do cliente e da administração. Responsável por consumir a API de forma inteligente e apresentar os dados com uma experiência de usuário fluida. *(Em desenvolvimento por David) Gabriel*.
 ---
 
 ## ✨ Funcionalidades
 
 ### 📱 1. O App Mobile (Visão do Cliente)
-O foco do aplicativo que o Deivinho vai fazer no React Native tem que ser a velocidade. O cliente quer marcar o corte em 3 cliques.
+O foco do aplicativo que o David Gabriel vai fazer no React Native tem que ser a velocidade. O cliente quer marcar o corte em 3 cliques.
 
 * **Catálogo de Serviços:** Uma tela visual mostrando os cortes, barbas, combos, com descrições e preços.
 * **Seleção de Profissional:** O cliente pode escolher o seu barbeiro favorito ou selecionar "Qualquer um disponível" (isso rende uma lógica bem legal no backend!).
@@ -28,10 +36,10 @@ Aqui é o sistema de gestão que vai rodar no computador ou tablet da barbearia.
 A beleza de separar o Front do Back é que o Deivinho não vai precisar calcular nada disso. Ele só vai pedir os dados para a sua API, e o seu código Java fará o trabalho pesado. Suas principais funcionalidades invisíveis serão:
 
 * **Algoritmo de Horários Disponíveis:** Essa é a funcionalidade mais desafiadora e legal de programar. Quando o app pedir os horários do dia 15, o seu código vai ter que:
-  1. Ver a hora que a barbearia abre e fecha (ex: 09h às 18h).
-  2. Pegar a ```duracaoEmMinutos``` do serviço escolhido.
-  3. Olhar no banco de dados os ```Agendamentos``` que já existem para aquele dia.
-  4. Subtrair os horários ocupados e devolver para o Front apenas os blocos de tempo que sobraram.
+      1. Ver a hora que a barbearia abre e fecha (ex: 09h às 18h).
+      2. Pegar a ```duracaoEmMinutos``` do serviço escolhido.
+      3. Olhar no banco de dados os ```Agendamentos``` que já existem para aquele dia.
+      4. Subtrair os horários ocupados e devolver para o Front apenas os blocos de tempo que sobraram.
 * **Proteção contra Concorrência:** Se dois clientes abrirem o app ao mesmo tempo e tentarem marcar sexta-feira às 19h com o mesmo barbeiro, a sua API tem que deixar o primeiro passar e travar o segundo, avisando que o horário acabou de ser preenchido.
 * **Segurança de Rotas:** Garantir, usando o Token JWT, que um cliente comum não consiga mandar uma requisição para a rota de deletar um serviço ou ver o faturamento do dia.
 
@@ -57,32 +65,6 @@ Painel administrativo focado na experiência do barbeiro e do dono do estabeleci
 Aplicativo focado na experiência do cliente final para agendamento rápido.
 * **React Native**
 * **Expo:** Para abstração de configurações nativas e testes simplificados.
-
----
-
-## 🗺️ Roadmap do Projeto
-
-O desenvolvimento segue uma trilha estruturada em 6 fases:
-
-1. **Fase 1: O Alicerce (Planejamento e Modelagem)**
-   * Definição do MVP e prototipagem das telas.
-   * Modelagem do banco de dados no PostgreSQL (regras de gerenciamento de horários e disponibilidade).
-
-2. **Fase 2: O Esqueleto (Setup)**
-   * Configuração dos repositórios, inicialização do Spring Boot com Neon e do React com Vite.
-
-3. **Fase 3: O Porteiro (Autenticação)**
-   * Criação de perfis (CLIENTE e BARBEIRO), implementação de JWT no backend e rotas protegidas no frontend.
-
-4. **Fase 4: A Máquina Girando (Core do Negócio)**
-   * CRUD de serviços e barbeiros.
-   * Implementação da lógica complexa de validação e concorrência de agendamentos no backend.
-
-5. **Fase 5: O Aplicativo (Mobile)**
-   * Setup do Expo e consumo das rotas da API já existentes pelas telas do aplicativo.
-
-6. **Fase 6: O Palco (Deploy e Publicação)**
-   * Publicação do Frontend Web e do Backend.
 
 ---
 
@@ -112,31 +94,6 @@ spring.datasource.password=sua_senha
 
 ---
 
-## 🗺️ Roadmap do Projeto
-
-O desenvolvimento segue uma trilha estruturada em 6 fases:
-
-1. **Fase 1: O Alicerce (Planejamento e Modelagem)**
-   * Definição do MVP e prototipagem das telas.
-   * Modelagem do banco de dados no PostgreSQL (regras de gerenciamento de horários e disponibilidade).
-
-2. **Fase 2: O Esqueleto (Setup)**
-   * Configuração dos repositórios, inicialização do Spring Boot com Neon e do React com Vite.
-
-3. **Fase 3: O Porteiro (Autenticação)**
-   * Criação de perfis (CLIENTE e BARBEIRO), implementação de JWT no backend e rotas protegidas no frontend.
-
-4. **Fase 4: A Máquina Girando (Core do Negócio)**
-   * CRUD de serviços e barbeiros.
-   * Implementação da lógica complexa de validação e concorrência de agendamentos no backend.
-
-5. **Fase 5: O Aplicativo (Mobile)**
-   * Setup do Expo e consumo das rotas da API já existentes pelas telas do aplicativo.
-
-6. **Fase 6: O Palco (Deploy e Publicação)**
-   * Publicação do Frontend Web e do Backend.
-
----
 ## 📄 Licença
 Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
 
@@ -154,6 +111,12 @@ O desenvolvimento está dividido em duas frentes principais:
 
 Desenvolvido para fins de estudo e portfólio 💻
 
-📧 Entre em contato: eniojr100@gmail.com <br>
-🔗 LinkedIn: https://www.linkedin.com/in/enioeduardojr/ <br>
-📷 Instagram: https://www.instagram.com/enio_juniorrr/ <br>
+Entre em contato com Enio Jr. para dúvidas, sugestões ou colaborações futuras:
+📧 E-mail: eniojr100@gmail.com <br>
+🔗 LinkedIn: https://www.linkedin.com/in/enioeduardojr <br>
+📷 Instagram: https://www.instagram.com/enio_juniorrr <br>
+
+Entre em contato com David Gabriel para dúvidas, sugestões ou colaborações futuras:
+📧 E-mail: davidglm.trabalho@gmail.com <br>
+🔗 LinkedIn: https://www.linkedin.com/in/davidgabriellm <br>
+📷 Instagram: https://www.instagram.com/davinho_glm <br>
