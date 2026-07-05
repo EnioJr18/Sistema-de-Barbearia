@@ -7,6 +7,7 @@ import com.seuapp.mapper.AgendamentoMapper;
 import com.seuapp.model.Agendamento;
 import com.seuapp.repository.AgendamentoRepository;
 import com.seuapp.service.AgendamentoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +41,7 @@ public class AgendamentoController {
     }
 
     @PostMapping
-    public AgendamentoResponseDTO cadastrar(@RequestBody AgendamentoCreateRequestDTO request) {
+    public AgendamentoResponseDTO cadastrar(@RequestBody @Valid AgendamentoCreateRequestDTO request) {
         Agendamento agendamento = agendamentoMapper.toEntity(request);
         return agendamentoMapper.toResponse(agendamentoService.agendar(agendamento));
     }
@@ -58,7 +59,7 @@ public class AgendamentoController {
     }
 
     @PutMapping("/{id}")
-    public AgendamentoResponseDTO atualizar(@PathVariable Long id, @RequestBody AgendamentoUpdateRequestDTO request) {
+    public AgendamentoResponseDTO atualizar(@PathVariable Long id, @RequestBody @Valid AgendamentoUpdateRequestDTO request) {
         return agendamentoRepository.findById(id)
                 .map(agendamento -> {
                     agendamentoMapper.updateEntity(agendamento, request);

@@ -8,6 +8,7 @@ import com.seuapp.mapper.UsuarioMapper;
 import com.seuapp.model.Usuario;
 import com.seuapp.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,7 +43,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public UsuarioResponseDTO cadastrar(@RequestBody UsuarioCreateRequestDTO request) {
+    public UsuarioResponseDTO cadastrar(@RequestBody @Valid UsuarioCreateRequestDTO request) {
         Usuario usuario = usuarioMapper.toEntity(request);
         String senhaTriturada = passwordEncoder.encode(usuario.getSenha());
         usuario.setSenha(senhaTriturada);
@@ -66,7 +67,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public UsuarioResponseDTO atualizar(@PathVariable Long id, @RequestBody UsuarioUpdateRequestDTO request) {
+    public UsuarioResponseDTO atualizar(@PathVariable Long id, @RequestBody @Valid UsuarioUpdateRequestDTO request) {
         return usuarioRepository.findById(id)
                 .map(usuario -> {
                     usuarioMapper.updateEntity(usuario, request);
@@ -77,7 +78,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}/senha")
-    public UsuarioResponseDTO atualizarSenha(@PathVariable Long id, @RequestBody UsuarioSenhaUpdateRequestDTO request) {
+    public UsuarioResponseDTO atualizarSenha(@PathVariable Long id, @RequestBody @Valid UsuarioSenhaUpdateRequestDTO request) {
         return usuarioRepository.findById(id)
                 .map(usuario -> {
                     String senhaTriturada = passwordEncoder.encode(request.getSenha());

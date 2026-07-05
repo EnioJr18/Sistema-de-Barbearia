@@ -3,6 +3,7 @@ package com.seuapp.controller;
 import com.seuapp.dto.AutenticacaoDTO;
 import com.seuapp.model.Usuario;
 import com.seuapp.service.TokenService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +21,7 @@ public class AutenticacaoController {
     private final TokenService tokenService;
 
     @PostMapping
-    public String efetuarLogin(@RequestBody AutenticacaoDTO dados) {
+    public String efetuarLogin(@RequestBody @Valid AutenticacaoDTO dados) {
         var tokenAutenticacao = new UsernamePasswordAuthenticationToken(dados.getEmail(), dados.getSenha());
 
         var authentication = manager.authenticate(tokenAutenticacao);

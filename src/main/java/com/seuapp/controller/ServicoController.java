@@ -6,6 +6,7 @@ import com.seuapp.dto.ServicoUpdateRequestDTO;
 import com.seuapp.mapper.ServicoMapper;
 import com.seuapp.model.Servico;
 import com.seuapp.repository.ServicoRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +36,7 @@ public class ServicoController {
     }
 
     @PostMapping
-    public ServicoResponseDTO cadastrar(@RequestBody ServicoCreateRequestDTO request) {
+    public ServicoResponseDTO cadastrar(@RequestBody @Valid ServicoCreateRequestDTO request) {
         Servico servico = servicoMapper.toEntity(request);
         return servicoMapper.toResponse(servicoRepository.save(servico));
     }
@@ -53,7 +54,7 @@ public class ServicoController {
     }
 
     @PutMapping("/{id}")
-    public ServicoResponseDTO atualizar(@PathVariable Long id, @RequestBody ServicoUpdateRequestDTO request) {
+    public ServicoResponseDTO atualizar(@PathVariable Long id, @RequestBody @Valid ServicoUpdateRequestDTO request) {
         return servicoRepository.findById(id)
                 .map(servico -> {
                     servicoMapper.updateEntity(servico, request);
