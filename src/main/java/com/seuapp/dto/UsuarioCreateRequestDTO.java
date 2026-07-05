@@ -18,6 +18,5 @@ public class UsuarioCreateRequestDTO {
     @Size(min = 6, message = "senha deve ter no minimo 6 caracteres")
     private String senha;
 
-    @NotBlank(message = "perfil e obrigatorio")
     private String perfil;
 }

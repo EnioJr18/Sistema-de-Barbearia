@@ -22,7 +22,6 @@ public class UsuarioMapper {
     public void updateEntity(Usuario usuario, UsuarioUpdateRequestDTO request) {
         usuario.setNome(request.getNome());
         usuario.setEmail(request.getEmail());
-        usuario.setPerfil(request.getPerfil());
     }
 
     public UsuarioResponseDTO toResponse(Usuario usuario) {

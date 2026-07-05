@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,6 +36,7 @@ public class ServicoController {
         return paginaDeServicos.map(servicoMapper::toResponse);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'BARBEIRO')")
     @PostMapping
     public ServicoResponseDTO cadastrar(@RequestBody @Valid ServicoCreateRequestDTO request) {
         Servico servico = servicoMapper.toEntity(request);
@@ -48,11 +50,13 @@ public class ServicoController {
                 .orElse(null);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deletar(@PathVariable Long id) {
         servicoRepository.deleteById(id);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'BARBEIRO')")
     @PutMapping("/{id}")
     public ServicoResponseDTO atualizar(@PathVariable Long id, @RequestBody @Valid ServicoUpdateRequestDTO request) {
         return servicoRepository.findById(id)

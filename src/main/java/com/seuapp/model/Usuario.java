@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -36,11 +36,12 @@ public class Usuario implements org.springframework.security.core.userdetails.Us
 
     @Override
     public java.util.Collection<? extends GrantedAuthority> getAuthorities() {
-        if ("BARBEIRO".equals(perfil)) {
-            return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        }
-        else if ("CLIENTE".equals(perfil)) {
-            return Arrays.asList(new SimpleGrantedAuthority("ROLE_USUARIO"));
+        if ("ADMIN".equals(perfil)) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        } else if ("BARBEIRO".equals(perfil)) {
+            return List.of(new SimpleGrantedAuthority("ROLE_BARBEIRO"));
+        } else if ("CLIENTE".equals(perfil)) {
+            return List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"));
         }
         return java.util.Collections.emptyList();
     }

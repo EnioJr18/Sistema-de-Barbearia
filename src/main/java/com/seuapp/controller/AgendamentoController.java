@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +24,7 @@ public class AgendamentoController {
     private final AgendamentoService agendamentoService;
     private final AgendamentoMapper agendamentoMapper;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public Page<AgendamentoResponseDTO> listar(@RequestParam(required = false) Long barbeiroId,
                                                @RequestParam(required = false) String nomeCliente,
@@ -40,12 +42,14 @@ public class AgendamentoController {
         return paginaDeAgendamentos.map(agendamentoMapper::toResponse);
     }
 
+    @PreAuthorize("@controleAcessoService.podeCriarAgendamento(#request)")
     @PostMapping
     public AgendamentoResponseDTO cadastrar(@RequestBody @Valid AgendamentoCreateRequestDTO request) {
         Agendamento agendamento = agendamentoMapper.toEntity(request);
         return agendamentoMapper.toResponse(agendamentoService.agendar(agendamento));
     }
 
+    @PreAuthorize("@controleAcessoService.podeAcessarAgendamento(#id)")
     @GetMapping("/{id}")
     public AgendamentoResponseDTO buscarPorId(@PathVariable Long id) {
         return agendamentoRepository.findById(id)
@@ -53,11 +57,13 @@ public class AgendamentoController {
                 .orElse(null);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deletar(@PathVariable Long id) {
         agendamentoRepository.deleteById(id);
     }
 
+    @PreAuthorize("@controleAcessoService.podeAtualizarAgendamento(#id)")
     @PutMapping("/{id}")
     public AgendamentoResponseDTO atualizar(@PathVariable Long id, @RequestBody @Valid AgendamentoUpdateRequestDTO request) {
         return agendamentoRepository.findById(id)

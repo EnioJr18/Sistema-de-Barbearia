@@ -13,6 +13,5 @@ public class UsuarioUpdateRequestDTO {
     @Email(message = "deve ser um endereco de e-mail valido")
     private String email;
 
-    @NotBlank(message = "perfil e obrigatorio")
     private String perfil;
 }
