@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.http.ResponseEntity;
 
 @RestControllerAdvice
-public class TratadorDeErros {
+public class TratadorDeErrosException {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErroMensagemDTO> tratarErro404(EntityNotFoundException e) {
         ErroMensagemDTO erro = new ErroMensagemDTO();

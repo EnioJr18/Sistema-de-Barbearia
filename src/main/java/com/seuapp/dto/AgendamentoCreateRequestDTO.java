@@ -7,12 +7,14 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class AgendamentoResponseDTO {
-    private Long id;
-    private UsuarioResumoResponseDTO cliente;
-    private UsuarioResumoResponseDTO barbeiro;
-    private ServicoResumoResponseDTO servico;
+public class AgendamentoCreateRequestDTO {
     private LocalDateTime dataEHora;
     private StatusAgendamento status;
     private FormaPagamento formaDePagamento;
+    private Long clienteId;
+    private Long barbeiroId;
+    private Long servicoId;
+    private ReferenciaRequestDTO cliente;
+    private ReferenciaRequestDTO barbeiro;
+    private ReferenciaRequestDTO servico;
 }

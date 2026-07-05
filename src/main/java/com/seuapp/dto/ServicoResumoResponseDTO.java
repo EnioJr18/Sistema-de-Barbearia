@@ -2,10 +2,11 @@ package com.seuapp.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
-public class UsuarioResponseDTO {
+public class ServicoResumoResponseDTO {
     private Long id;
     private String nome;
-    private String email;
-    private String perfil;
+    private BigDecimal preco;
 }

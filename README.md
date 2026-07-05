@@ -85,9 +85,6 @@ Limitações desta etapa:
 
 ## 💡 Próximas Melhorias Técnicas
 
-- Remover credenciais reais do `application.properties`.
-- Criar `application-example.properties`.
-- Usar variáveis de ambiente.
 - Implementar DTOs completos de request e response.
 - Adicionar Bean Validation com `@Valid`, `@NotBlank`, `@Email` e validações semelhantes.
 - Melhorar controle de permissões por perfil.
@@ -288,6 +285,25 @@ O controle por roles ainda é parcial e deve ser evoluído nas próximas etapas.
 
 Use variáveis de ambiente para configurar credenciais e segredos. Evite manter dados sensíveis diretamente no `application.properties`.
 
+O arquivo `src/main/resources/application-example.properties` contém valores fictícios para consulta. Não copie credenciais reais para arquivos versionados.
+
+Variáveis obrigatórias:
+
+```text
+SPRING_DATASOURCE_URL
+SPRING_DATASOURCE_USERNAME
+SPRING_DATASOURCE_PASSWORD
+API_SECURITY_TOKEN_SECRET
+```
+
+Variáveis opcionais:
+
+```text
+SPRING_PROFILES_ACTIVE=dev
+SPRING_JPA_HIBERNATE_DDL_AUTO=update
+SPRING_JPA_SHOW_SQL=true
+```
+
 Exemplo seguro de configuração:
 
 ```properties
@@ -310,15 +326,25 @@ git clone https://github.com/EnioJr18/Sistema-de-Barbearia.git
 cd Sistema-de-Barbearia
 ```
 
-No Windows:
+No Windows PowerShell:
 
 ```powershell
+$env:SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/barbearia"
+$env:SPRING_DATASOURCE_USERNAME="barbearia_user"
+$env:SPRING_DATASOURCE_PASSWORD="troque-esta-senha"
+$env:API_SECURITY_TOKEN_SECRET="troque-este-segredo-jwt-com-valor-longo-e-aleatorio"
+$env:SPRING_PROFILES_ACTIVE="dev"
 .\gradlew.bat bootRun
 ```
 
 No Linux, macOS ou Git Bash:
 
 ```bash
+export SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/barbearia"
+export SPRING_DATASOURCE_USERNAME="barbearia_user"
+export SPRING_DATASOURCE_PASSWORD="troque-esta-senha"
+export API_SECURITY_TOKEN_SECRET="troque-este-segredo-jwt-com-valor-longo-e-aleatorio"
+export SPRING_PROFILES_ACTIVE="dev"
 ./gradlew bootRun
 ```
 
