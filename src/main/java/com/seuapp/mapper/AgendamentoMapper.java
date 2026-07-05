@@ -5,6 +5,7 @@ import com.seuapp.dto.AgendamentoResponseDTO;
 import com.seuapp.dto.AgendamentoUpdateRequestDTO;
 import com.seuapp.dto.ReferenciaRequestDTO;
 import com.seuapp.model.Agendamento;
+import com.seuapp.model.Agendamento.StatusAgendamento;
 import com.seuapp.repository.ServicoRepository;
 import com.seuapp.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,7 +33,7 @@ public class AgendamentoMapper {
     public Agendamento toEntity(AgendamentoCreateRequestDTO request) {
         Agendamento agendamento = new Agendamento();
         agendamento.setDataEHora(request.getDataEHora());
-        agendamento.setStatus(request.getStatus());
+        agendamento.setStatus(StatusAgendamento.PENDENTE);
         agendamento.setFormaDePagamento(request.getFormaDePagamento());
         agendamento.setCliente(usuarioRepository.findById(resolveId(request.getClienteId(), request.getCliente()))
                 .orElseThrow(() -> new EntityNotFoundException("Cliente nao encontrado")));

@@ -2,7 +2,6 @@ package com.seuapp.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.seuapp.model.Agendamento.FormaPagamento;
-import com.seuapp.model.Agendamento.StatusAgendamento;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
@@ -15,9 +14,6 @@ import java.time.LocalDateTime;
 public class AgendamentoCreateRequestDTO {
     @NotNull(message = "dataEHora e obrigatoria")
     private LocalDateTime dataEHora;
-
-    @NotNull(message = "status e obrigatorio")
-    private StatusAgendamento status;
 
     @NotNull(message = "formaDePagamento e obrigatoria")
     private FormaPagamento formaDePagamento;
