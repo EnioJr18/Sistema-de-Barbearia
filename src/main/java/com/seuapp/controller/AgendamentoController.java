@@ -12,8 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/agendamentos")
@@ -40,6 +44,15 @@ public class AgendamentoController {
         }
 
         return paginaDeAgendamentos.map(agendamentoMapper::toResponse);
+    }
+
+    @GetMapping("/horarios-disponiveis")
+    public List<String> listarHorariosDisponiveis(
+            @RequestParam Long barbeiroId,
+            @RequestParam Long servicoId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
+
+        return agendamentoService.listarHorariosDisponiveis(barbeiroId, servicoId, data);
     }
 
     @PreAuthorize("@controleAcessoService.podeCriarAgendamento(#request)")

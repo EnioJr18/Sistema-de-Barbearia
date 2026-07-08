@@ -10,9 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.ErrorResponseException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -95,6 +97,30 @@ public class TratadorDeErrosException {
                 HttpStatus.BAD_REQUEST,
                 "Bad Request",
                 "Requisicao invalida.",
+                request.getRequestURI());
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErroApiDTO> tratarParametroObrigatorioAusente(
+            MissingServletRequestParameterException exception,
+            HttpServletRequest request) {
+
+        return construirResposta(
+                HttpStatus.BAD_REQUEST,
+                "Bad Request",
+                "Parametro obrigatorio ausente: " + exception.getParameterName() + ".",
+                request.getRequestURI());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErroApiDTO> tratarParametroInvalido(
+            MethodArgumentTypeMismatchException exception,
+            HttpServletRequest request) {
+
+        return construirResposta(
+                HttpStatus.BAD_REQUEST,
+                "Bad Request",
+                "Parametro invalido: " + exception.getName() + ".",
                 request.getRequestURI());
     }
 

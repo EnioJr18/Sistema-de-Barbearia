@@ -2,7 +2,11 @@ package com.seuapp.service;
 
 import com.seuapp.model.Agendamento;
 import com.seuapp.model.Agendamento.StatusAgendamento;
+import com.seuapp.model.Servico;
+import com.seuapp.model.Usuario;
 import com.seuapp.repository.AgendamentoRepository;
+import com.seuapp.repository.ServicoRepository;
+import com.seuapp.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,8 +14,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +27,11 @@ public class AgendamentoService {
 
     private static final LocalTime HORA_ABERTURA = LocalTime.of(8, 0);
     private static final LocalTime HORA_FECHAMENTO = LocalTime.of(18, 0);
+    private static final DateTimeFormatter FORMATO_HORARIO = DateTimeFormatter.ofPattern("HH:mm");
 
     private final AgendamentoRepository agendamentoRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final ServicoRepository servicoRepository;
 
     public Agendamento agendar(Agendamento agendamento) {
         validarDisponibilidade(agendamento);
@@ -41,6 +52,47 @@ public class AgendamentoService {
 
         agendamento.setStatus(StatusAgendamento.CANCELADO);
         return agendamentoRepository.save(agendamento);
+    }
+
+    public List<String> listarHorariosDisponiveis(Long barbeiroId, Long servicoId, LocalDate data) {
+        Usuario barbeiro = usuarioRepository.findById(barbeiroId)
+                .orElseThrow(() -> new EntityNotFoundException("Barbeiro nao encontrado"));
+
+        if (!"BARBEIRO".equals(barbeiro.getPerfil())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario informado nao e barbeiro.");
+        }
+
+        Servico servico = servicoRepository.findById(servicoId)
+                .orElseThrow(() -> new EntityNotFoundException("Servico nao encontrado"));
+
+        if (servico.getDuracaoEmMinutos() == null || servico.getDuracaoEmMinutos() <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Servico deve ter duracao maior que zero.");
+        }
+
+        if (data.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A barbearia nao funciona aos domingos.");
+        }
+
+        List<Agendamento> agendamentosExistentes = agendamentoRepository
+                .findByBarbeiroIdAndStatusNot(barbeiroId, StatusAgendamento.CANCELADO);
+
+        List<String> horariosDisponiveis = new ArrayList<>();
+        for (LocalTime horario = HORA_ABERTURA;
+             !horario.plusMinutes(servico.getDuracaoEmMinutos()).isAfter(HORA_FECHAMENTO);
+             horario = horario.plusMinutes(servico.getDuracaoEmMinutos())) {
+
+            LocalDateTime inicio = data.atTime(horario);
+            LocalDateTime fim = inicio.plusMinutes(servico.getDuracaoEmMinutos());
+
+            boolean temConflito = agendamentosExistentes.stream()
+                    .anyMatch(existente -> existeSobreposicao(inicio, fim, existente));
+
+            if (!temConflito) {
+                horariosDisponiveis.add(horario.format(FORMATO_HORARIO));
+            }
+        }
+
+        return horariosDisponiveis;
     }
 
     private void validarDisponibilidade(Agendamento agendamento) {
