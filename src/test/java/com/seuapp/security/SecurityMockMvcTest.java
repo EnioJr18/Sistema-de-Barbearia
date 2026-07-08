@@ -1,4 +1,4 @@
-package com.example.seuapp.security;
+package com.seuapp.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seuapp.BarbeariaApplication;

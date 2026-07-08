@@ -3,9 +3,7 @@ package com.seuapp.controller;
 import com.seuapp.dto.ServicoCreateRequestDTO;
 import com.seuapp.dto.ServicoResponseDTO;
 import com.seuapp.dto.ServicoUpdateRequestDTO;
-import com.seuapp.mapper.ServicoMapper;
-import com.seuapp.model.Servico;
-import com.seuapp.repository.ServicoRepository;
+import com.seuapp.service.ServicoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,51 +17,34 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ServicoController {
 
-    private final ServicoRepository servicoRepository;
-    private final ServicoMapper servicoMapper;
+    private final ServicoService servicoService;
 
     @GetMapping
     public Page<ServicoResponseDTO> listarTodos(@PageableDefault(size = 10) Pageable pageable,
                                                 @RequestParam(required = false) String nome) {
-        Page<Servico> paginaDeServicos;
-
-        if (nome != null) {
-            paginaDeServicos = servicoRepository.findByNomeContainingIgnoreCase(nome, pageable);
-        } else {
-            paginaDeServicos = servicoRepository.findAll(pageable);
-        }
-
-        return paginaDeServicos.map(servicoMapper::toResponse);
+        return servicoService.listarTodos(pageable, nome);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'BARBEIRO')")
     @PostMapping
     public ServicoResponseDTO cadastrar(@RequestBody @Valid ServicoCreateRequestDTO request) {
-        Servico servico = servicoMapper.toEntity(request);
-        return servicoMapper.toResponse(servicoRepository.save(servico));
+        return servicoService.cadastrar(request);
     }
 
     @GetMapping("/{id}")
     public ServicoResponseDTO buscarPorId(@PathVariable Long id) {
-        return servicoRepository.findById(id)
-                .map(servicoMapper::toResponse)
-                .orElse(null);
+        return servicoService.buscarPorId(id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deletar(@PathVariable Long id) {
-        servicoRepository.deleteById(id);
+        servicoService.deletar(id);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'BARBEIRO')")
     @PutMapping("/{id}")
     public ServicoResponseDTO atualizar(@PathVariable Long id, @RequestBody @Valid ServicoUpdateRequestDTO request) {
-        return servicoRepository.findById(id)
-                .map(servico -> {
-                    servicoMapper.updateEntity(servico, request);
-                    return servicoMapper.toResponse(servicoRepository.save(servico));
-                })
-                .orElse(null);
+        return servicoService.atualizar(id, request);
     }
 }

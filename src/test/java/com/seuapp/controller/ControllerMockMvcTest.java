@@ -1,4 +1,4 @@
-package com.example.seuapp.controller;
+package com.seuapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seuapp.BarbeariaApplication;

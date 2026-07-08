@@ -68,7 +68,7 @@ public class UsuarioService {
                     Usuario usuarioSalvo = usuarioRepository.save(usuario);
                     return usuarioMapper.toResponse(usuarioSalvo);
                 })
-                .orElse(null);
+                .orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado"));
     }
 
     public UsuarioResponseDTO atualizarSenha(Long id, UsuarioSenhaUpdateRequestDTO request) {
@@ -79,7 +79,7 @@ public class UsuarioService {
                     Usuario usuarioSalvo = usuarioRepository.save(usuario);
                     return usuarioMapper.toResponse(usuarioSalvo);
                 })
-                .orElse(null);
+                .orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado"));
     }
 
     public void deletar(Long id) {

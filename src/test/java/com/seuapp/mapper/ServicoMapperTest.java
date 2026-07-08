@@ -1,4 +1,4 @@
-package com.example.seuapp.mapper;
+package com.seuapp.mapper;
 
 import com.seuapp.dto.ServicoCreateRequestDTO;
 import com.seuapp.dto.ServicoResponseDTO;

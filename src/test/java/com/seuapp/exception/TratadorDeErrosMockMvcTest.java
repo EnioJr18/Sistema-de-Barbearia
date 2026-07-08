@@ -1,4 +1,4 @@
-package com.example.seuapp.exception;
+package com.seuapp.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seuapp.BarbeariaApplication;

@@ -1,4 +1,4 @@
-package com.example.seuapp.service;
+package com.seuapp.service;
 
 import com.seuapp.dto.UsuarioCreateRequestDTO;
 import com.seuapp.dto.UsuarioResponseDTO;
@@ -9,6 +9,7 @@ import com.seuapp.model.Usuario;
 import com.seuapp.repository.UsuarioRepository;
 import com.seuapp.security.ControleAcessoService;
 import com.seuapp.service.UsuarioService;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -151,6 +152,35 @@ class UsuarioServiceTest {
         assertEquals("CLIENTE", response.getPerfil());
         assertEquals("hash-novo", usuario.getSenha());
         verify(passwordEncoder).encode("novaSenha");
+    }
+
+    @Test
+    void atualizarUsuarioInexistenteLancaEntityNotFoundException() {
+        UsuarioUpdateRequestDTO request = new UsuarioUpdateRequestDTO();
+        request.setNome("Novo Nome");
+        request.setEmail("novo@example.com");
+        request.setPerfil("CLIENTE");
+        when(usuarioRepository.findById(99L)).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+                () -> usuarioService.atualizar(99L, request));
+
+        assertEquals("Usuario nao encontrado", exception.getMessage());
+        verify(usuarioRepository, never()).save(any());
+    }
+
+    @Test
+    void atualizarSenhaUsuarioInexistenteLancaEntityNotFoundException() {
+        UsuarioSenhaUpdateRequestDTO request = new UsuarioSenhaUpdateRequestDTO();
+        request.setSenha("novaSenha");
+        when(usuarioRepository.findById(99L)).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+                () -> usuarioService.atualizarSenha(99L, request));
+
+        assertEquals("Usuario nao encontrado", exception.getMessage());
+        verify(passwordEncoder, never()).encode(any());
+        verify(usuarioRepository, never()).save(any());
     }
 
     private UsuarioCreateRequestDTO usuarioCreateRequest(String perfil) {
