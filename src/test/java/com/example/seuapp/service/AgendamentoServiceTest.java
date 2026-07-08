@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.seuapp.service;
 
 import com.seuapp.model.Agendamento;
 import com.seuapp.model.Agendamento.FormaPagamento;

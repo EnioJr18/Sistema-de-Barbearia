@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.seuapp;
 
 import com.seuapp.BarbeariaApplication;
 import org.junit.jupiter.api.Test;
