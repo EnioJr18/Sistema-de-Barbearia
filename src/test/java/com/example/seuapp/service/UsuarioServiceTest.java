@@ -1,6 +1,5 @@
-package com.example.seuapp.controller;
+package com.example.seuapp.service;
 
-import com.seuapp.controller.UsuarioController;
 import com.seuapp.dto.UsuarioCreateRequestDTO;
 import com.seuapp.dto.UsuarioResponseDTO;
 import com.seuapp.dto.UsuarioSenhaUpdateRequestDTO;
@@ -9,6 +8,7 @@ import com.seuapp.mapper.UsuarioMapper;
 import com.seuapp.model.Usuario;
 import com.seuapp.repository.UsuarioRepository;
 import com.seuapp.security.ControleAcessoService;
+import com.seuapp.service.UsuarioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UsuarioControllerTest {
+class UsuarioServiceTest {
 
     @Mock
     private UsuarioRepository usuarioRepository;
@@ -34,11 +34,11 @@ class UsuarioControllerTest {
     @Mock
     private ControleAcessoService controleAcessoService;
 
-    private UsuarioController usuarioController;
+    private UsuarioService usuarioService;
 
     @BeforeEach
     void setUp() {
-        usuarioController = new UsuarioController(usuarioRepository, passwordEncoder, new UsuarioMapper(), controleAcessoService);
+        usuarioService = new UsuarioService(usuarioRepository, passwordEncoder, new UsuarioMapper(), controleAcessoService);
     }
 
     @Test
@@ -51,7 +51,7 @@ class UsuarioControllerTest {
             return usuario;
         });
 
-        UsuarioResponseDTO response = usuarioController.cadastrar(request);
+        UsuarioResponseDTO response = usuarioService.cadastrarCliente(request);
 
         assertEquals("CLIENTE", response.getPerfil());
         verify(usuarioRepository).save(argThat(usuario -> "CLIENTE".equals(usuario.getPerfil())));
@@ -67,7 +67,7 @@ class UsuarioControllerTest {
             return usuario;
         });
 
-        UsuarioResponseDTO response = usuarioController.cadastrarBarbeiro(request);
+        UsuarioResponseDTO response = usuarioService.cadastrarBarbeiro(request);
 
         assertEquals("BARBEIRO", response.getPerfil());
         verify(usuarioRepository).save(argThat(usuario -> "BARBEIRO".equals(usuario.getPerfil())));
@@ -83,7 +83,7 @@ class UsuarioControllerTest {
             return usuario;
         });
 
-        UsuarioResponseDTO response = usuarioController.cadastrarAdmin(request);
+        UsuarioResponseDTO response = usuarioService.cadastrarAdmin(request);
 
         assertEquals("ADMIN", response.getPerfil());
         verify(usuarioRepository).save(argThat(usuario -> "ADMIN".equals(usuario.getPerfil())));
@@ -95,7 +95,7 @@ class UsuarioControllerTest {
         when(passwordEncoder.encode("senha123")).thenReturn("hash-gerado");
         when(usuarioRepository.save(any(Usuario.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        usuarioController.cadastrar(request);
+        usuarioService.cadastrarCliente(request);
 
         verify(passwordEncoder).encode("senha123");
         verify(usuarioRepository).save(argThat(usuario -> "hash-gerado".equals(usuario.getSenha())));
@@ -112,7 +112,7 @@ class UsuarioControllerTest {
         when(controleAcessoService.isAdmin()).thenReturn(false);
         when(usuarioRepository.save(usuario)).thenReturn(usuario);
 
-        UsuarioResponseDTO response = usuarioController.atualizar(1L, request);
+        UsuarioResponseDTO response = usuarioService.atualizar(1L, request);
 
         assertEquals("Novo Nome", response.getNome());
         assertEquals("hash-original", usuario.getSenha());
@@ -131,7 +131,7 @@ class UsuarioControllerTest {
         when(controleAcessoService.isAdmin()).thenReturn(true);
         when(usuarioRepository.save(usuario)).thenReturn(usuario);
 
-        UsuarioResponseDTO response = usuarioController.atualizar(1L, request);
+        UsuarioResponseDTO response = usuarioService.atualizar(1L, request);
 
         assertEquals("BARBEIRO", response.getPerfil());
         assertEquals("hash-original", usuario.getSenha());
@@ -146,7 +146,7 @@ class UsuarioControllerTest {
         when(passwordEncoder.encode("novaSenha")).thenReturn("hash-novo");
         when(usuarioRepository.save(usuario)).thenReturn(usuario);
 
-        UsuarioResponseDTO response = usuarioController.atualizarSenha(1L, request);
+        UsuarioResponseDTO response = usuarioService.atualizarSenha(1L, request);
 
         assertEquals("CLIENTE", response.getPerfil());
         assertEquals("hash-novo", usuario.getSenha());
