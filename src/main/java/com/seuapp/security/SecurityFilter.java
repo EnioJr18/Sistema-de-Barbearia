@@ -1,7 +1,6 @@
-package com.seuapp.config;
+package com.seuapp.security;
 
 import com.seuapp.repository.UsuarioRepository;
-import com.seuapp.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

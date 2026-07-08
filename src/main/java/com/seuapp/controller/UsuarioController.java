@@ -7,7 +7,7 @@ import com.seuapp.dto.UsuarioUpdateRequestDTO;
 import com.seuapp.mapper.UsuarioMapper;
 import com.seuapp.model.Usuario;
 import com.seuapp.repository.UsuarioRepository;
-import com.seuapp.service.ControleAcessoService;
+import com.seuapp.security.ControleAcessoService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

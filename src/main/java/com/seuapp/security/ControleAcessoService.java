@@ -1,4 +1,4 @@
-package com.seuapp.service;
+package com.seuapp.security;
 
 import com.seuapp.dto.AgendamentoCreateRequestDTO;
 import com.seuapp.dto.ReferenciaRequestDTO;

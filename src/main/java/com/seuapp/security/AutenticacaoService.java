@@ -1,4 +1,4 @@
-package com.seuapp.service;
+package com.seuapp.security;
 
 import com.seuapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;

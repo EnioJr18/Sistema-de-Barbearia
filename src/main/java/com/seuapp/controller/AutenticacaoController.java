@@ -2,7 +2,7 @@ package com.seuapp.controller;
 
 import com.seuapp.dto.AutenticacaoDTO;
 import com.seuapp.model.Usuario;
-import com.seuapp.service.TokenService;
+import com.seuapp.security.TokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

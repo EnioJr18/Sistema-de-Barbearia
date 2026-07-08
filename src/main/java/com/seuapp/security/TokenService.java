@@ -1,4 +1,4 @@
-package com.seuapp.service;
+package com.seuapp.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
