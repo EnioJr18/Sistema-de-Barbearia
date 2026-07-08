@@ -38,7 +38,7 @@ Este projeto foi desenvolvido para praticar:
 | CRUD de agendamentos | Implementado |
 | Frontend Web | Planejado |
 | App Mobile | Planejado |
-| Swagger/OpenAPI | Planejado |
+| Swagger/OpenAPI | Implementado |
 | Docker | Planejado |
 | Testes automatizados completos | Planejado |
 
@@ -73,7 +73,6 @@ Limitações desta etapa:
 
 - Frontend Web administrativo.
 - Aplicativo Mobile para clientes.
-- Documentação interativa com Swagger/OpenAPI.
 - Docker e Docker Compose.
 - Testes automatizados mais completos.
 - Algoritmo de horários disponíveis.
@@ -90,7 +89,6 @@ Limitações desta etapa:
 - Melhorar controle de permissões por perfil.
 - Adicionar testes unitários e de integração.
 - Adicionar Flyway ou Liquibase.
-- Adicionar Swagger/OpenAPI.
 - Adicionar Docker/Docker Compose.
 - Melhorar tratamento global de exceções.
 - Evitar retorno direto de entidades JPA nas respostas.
@@ -121,7 +119,6 @@ Limitações desta etapa:
 
 ### Ferramentas planejadas
 
-- Swagger/OpenAPI
 - Docker
 - React
 - React Native
@@ -354,6 +351,33 @@ Por padrão, a API fica disponível em:
 http://localhost:8080
 ```
 
+## Swagger / OpenAPI
+
+Com a aplicação em execução, a documentação interativa fica disponível em:
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
+A especificação OpenAPI em JSON fica disponível em:
+
+```text
+http://localhost:8080/v3/api-docs
+```
+
+Para testar endpoints protegidos no Swagger:
+
+1. Faça login em `POST /login`.
+2. Copie o token JWT retornado.
+3. Clique em `Authorize` no Swagger UI.
+4. Informe o token no campo Bearer/JWT.
+
+Use o token puro se a UI já aplicar o esquema Bearer automaticamente. Se necessário, informe no formato:
+
+```text
+Bearer <token>
+```
+
 ## 🧪 Testes
 
 O projeto ainda possui testes mínimos. A cobertura automatizada deve ser ampliada para controllers, services, repositories, segurança e regras de agendamento.
@@ -373,7 +397,6 @@ No Linux, macOS ou Git Bash:
 ## ⚠️ Limitações Atuais
 
 - Este repositório ainda não inclui frontend Web ou Mobile.
-- Swagger/OpenAPI ainda não está implementado.
 - Docker e Docker Compose ainda não estão implementados.
 - A suíte de testes ainda é básica.
 - O controle de autorização por perfil ainda é parcial.

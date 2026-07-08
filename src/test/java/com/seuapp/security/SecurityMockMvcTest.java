@@ -106,6 +106,18 @@ class SecurityMockMvcTest {
     }
 
     @Test
+    void openApiDocsEhPublico() throws Exception {
+        mockMvc.perform(get("/v3/api-docs"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void swaggerUiEhPublico() throws Exception {
+        mockMvc.perform(get("/swagger-ui/index.html"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void rotaProtegidaSemTokenEhBloqueada() throws Exception {
         mockMvc.perform(get("/usuarios"))
                 .andExpect(status().isForbidden());
