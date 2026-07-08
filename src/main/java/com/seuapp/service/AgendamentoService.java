@@ -34,6 +34,9 @@ public class AgendamentoService {
     private final ServicoRepository servicoRepository;
 
     public Agendamento agendar(Agendamento agendamento) {
+        if (agendamento.getStatus() == null) {
+            agendamento.setStatus(StatusAgendamento.PENDENTE);
+        }
         validarDisponibilidade(agendamento);
         return agendamentoRepository.save(agendamento);
     }
