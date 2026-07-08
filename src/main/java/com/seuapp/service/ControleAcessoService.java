@@ -77,6 +77,10 @@ public class ControleAcessoService {
                 .orElse(false);
     }
 
+    public boolean podeCancelarAgendamento(Long agendamentoId) {
+        return podeAcessarAgendamento(agendamentoId);
+    }
+
     private boolean isClienteDoAgendamento(Usuario usuario, Agendamento agendamento) {
         return agendamento.getCliente() != null
                 && agendamento.getCliente().getId() != null

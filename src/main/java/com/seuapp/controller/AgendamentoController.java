@@ -73,4 +73,10 @@ public class AgendamentoController {
                 })
                 .orElse(null);
     }
+
+    @PreAuthorize("@controleAcessoService.podeCancelarAgendamento(#id)")
+    @PatchMapping("/{id}/cancelar")
+    public AgendamentoResponseDTO cancelar(@PathVariable Long id) {
+        return agendamentoMapper.toResponse(agendamentoService.cancelar(id));
+    }
 }

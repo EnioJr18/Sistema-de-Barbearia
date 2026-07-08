@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -56,6 +57,19 @@ public class TratadorDeErrosException {
 
         HttpStatus status = HttpStatus.valueOf(exception.getStatusCode().value());
         String message = exception.getReason() != null ? exception.getReason() : "Erro de regra de negocio.";
+
+        return construirResposta(status, status.getReasonPhrase(), message, request.getRequestURI());
+    }
+
+    @ExceptionHandler(ErrorResponseException.class)
+    public ResponseEntity<ErroApiDTO> tratarErroDoSpring(
+            ErrorResponseException exception,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.valueOf(exception.getStatusCode().value());
+        String message = exception.getBody().getDetail() != null
+                ? exception.getBody().getDetail()
+                : "Requisicao invalida.";
 
         return construirResposta(status, status.getReasonPhrase(), message, request.getRequestURI());
     }
