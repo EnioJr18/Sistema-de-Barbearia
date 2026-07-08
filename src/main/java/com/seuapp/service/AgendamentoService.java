@@ -41,9 +41,27 @@ public class AgendamentoService {
         return agendamentoRepository.save(agendamento);
     }
 
-    public Agendamento cancelar(Long id) {
-        Agendamento agendamento = agendamentoRepository.findById(id)
+    public Agendamento buscarPorId(Long id) {
+        return agendamentoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Agendamento nao encontrado"));
+    }
+
+    public Agendamento atualizar(Long id, Agendamento agendamentoAtualizado) {
+        buscarPorId(id);
+        agendamentoAtualizado.setId(id);
+        return agendamentoRepository.save(agendamentoAtualizado);
+    }
+
+    public void deletar(Long id) {
+        if (!agendamentoRepository.existsById(id)) {
+            throw new EntityNotFoundException("Agendamento nao encontrado");
+        }
+
+        agendamentoRepository.deleteById(id);
+    }
+
+    public Agendamento cancelar(Long id) {
+        Agendamento agendamento = buscarPorId(id);
 
         if (agendamento.getStatus() == StatusAgendamento.CANCELADO) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Agendamento ja esta cancelado.");

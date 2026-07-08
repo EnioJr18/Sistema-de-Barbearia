@@ -390,6 +390,23 @@ class ControllerMockMvcTest {
     }
 
     @Test
+    void getAgendamentoPorIdInexistenteRetorna404() throws Exception {
+        mockMvc.perform(get("/agendamentos/{id}", 999999L).header("Authorization", bearer(admin)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Agendamento nao encontrado"));
+    }
+
+    @Test
+    void putAgendamentoInexistenteRetorna404() throws Exception {
+        mockMvc.perform(put("/agendamentos/{id}", 999999L)
+                        .header("Authorization", bearer(admin))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json(agendamentoUpdateRequest(cliente, barbeiro, servico, dataUtil().atTime(10, 0)))))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Agendamento nao encontrado"));
+    }
+
+    @Test
     void patchCancelarComClienteDonoRetornaSucesso() throws Exception {
         Agendamento agendamento = salvarAgendamento(cliente, barbeiro, servico, dataUtil().atTime(9, 0), StatusAgendamento.PENDENTE);
 
@@ -407,12 +424,26 @@ class ControllerMockMvcTest {
     }
 
     @Test
+    void patchCancelarAgendamentoInexistenteRetorna404() throws Exception {
+        mockMvc.perform(patch("/agendamentos/{id}/cancelar", 999999L).header("Authorization", bearer(admin)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Agendamento nao encontrado"));
+    }
+
+    @Test
     void patchCancelarAgendamentoJaCanceladoRetorna400() throws Exception {
         Agendamento agendamento = salvarAgendamento(cliente, barbeiro, servico, dataUtil().atTime(9, 0), StatusAgendamento.CANCELADO);
 
         mockMvc.perform(patch("/agendamentos/{id}/cancelar", agendamento.getId()).header("Authorization", bearer(cliente)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Agendamento ja esta cancelado."));
+    }
+
+    @Test
+    void deleteAgendamentoInexistenteRetorna404() throws Exception {
+        mockMvc.perform(delete("/agendamentos/{id}", 999999L).header("Authorization", bearer(admin)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Agendamento nao encontrado"));
     }
 
     @Test
@@ -519,6 +550,17 @@ class ControllerMockMvcTest {
                 "servicoId", servico.getId(),
                 "dataEHora", dataEHora.toString(),
                 "formaDePagamento", "PIX"));
+    }
+
+    private Map<String, Object> agendamentoUpdateRequest(
+            Usuario cliente,
+            Usuario barbeiro,
+            Servico servico,
+            LocalDateTime dataEHora) {
+
+        Map<String, Object> request = agendamentoRequest(cliente, barbeiro, servico, dataEHora);
+        request.put("status", "CONFIRMADO");
+        return request;
     }
 
     private String json(Object value) throws Exception {

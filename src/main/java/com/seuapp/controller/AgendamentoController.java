@@ -65,26 +65,21 @@ public class AgendamentoController {
     @PreAuthorize("@controleAcessoService.podeAcessarAgendamento(#id)")
     @GetMapping("/{id}")
     public AgendamentoResponseDTO buscarPorId(@PathVariable Long id) {
-        return agendamentoRepository.findById(id)
-                .map(agendamentoMapper::toResponse)
-                .orElse(null);
+        return agendamentoMapper.toResponse(agendamentoService.buscarPorId(id));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deletar(@PathVariable Long id) {
-        agendamentoRepository.deleteById(id);
+        agendamentoService.deletar(id);
     }
 
     @PreAuthorize("@controleAcessoService.podeAtualizarAgendamento(#id)")
     @PutMapping("/{id}")
     public AgendamentoResponseDTO atualizar(@PathVariable Long id, @RequestBody @Valid AgendamentoUpdateRequestDTO request) {
-        return agendamentoRepository.findById(id)
-                .map(agendamento -> {
-                    agendamentoMapper.updateEntity(agendamento, request);
-                    return agendamentoMapper.toResponse(agendamentoRepository.save(agendamento));
-                })
-                .orElse(null);
+        Agendamento agendamento = agendamentoService.buscarPorId(id);
+        agendamentoMapper.updateEntity(agendamento, request);
+        return agendamentoMapper.toResponse(agendamentoService.atualizar(id, agendamento));
     }
 
     @PreAuthorize("@controleAcessoService.podeCancelarAgendamento(#id)")

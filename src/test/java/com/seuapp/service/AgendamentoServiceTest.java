@@ -164,6 +164,27 @@ class AgendamentoServiceTest {
     }
 
     @Test
+    void deveLancarErroQuandoBuscarAgendamentoInexistente() {
+        when(agendamentoRepository.findById(99L)).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+                () -> agendamentoService.buscarPorId(99L));
+
+        assertEquals("Agendamento nao encontrado", exception.getMessage());
+    }
+
+    @Test
+    void deveLancarErroQuandoCancelarAgendamentoInexistente() {
+        when(agendamentoRepository.findById(99L)).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+                () -> agendamentoService.cancelar(99L));
+
+        assertEquals("Agendamento nao encontrado", exception.getMessage());
+        verify(agendamentoRepository, never()).save(any());
+    }
+
+    @Test
     void naoDeveCancelarAgendamentoJaCancelado() {
         Agendamento agendamento = agendamentoEm(dataUtil().atTime(9, 0), 40, StatusAgendamento.CANCELADO);
         when(agendamentoRepository.findById(1L)).thenReturn(Optional.of(agendamento));
