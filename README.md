@@ -88,7 +88,7 @@ Limitações desta etapa:
 - Adicionar Bean Validation com `@Valid`, `@NotBlank`, `@Email` e validações semelhantes.
 - Melhorar controle de permissões por perfil.
 - Adicionar testes unitários e de integração.
-- Adicionar Flyway ou Liquibase.
+- Avaliar Liquibase apenas se houver necessidade futura; o projeto já usa Flyway.
 - Adicionar Docker/Docker Compose.
 - Melhorar tratamento global de exceções.
 - Evitar retorno direto de entidades JPA nas respostas.
@@ -269,8 +269,37 @@ O controle por roles ainda é parcial e deve ser evoluído nas próximas etapas.
 - Banco usado: PostgreSQL.
 - Ambiente usado: Neon.
 - Persistência com JPA/Hibernate.
-- Configuração atual de schema: `spring.jpa.hibernate.ddl-auto=update`.
-- Ainda não há migrations com Flyway ou Liquibase.
+- Versionamento de schema com Flyway.
+- Configuração atual de schema em `dev`, `prod` e `test`: `spring.jpa.hibernate.ddl-auto=validate`.
+- Ainda não há migrations com Liquibase.
+
+### Flyway
+
+As migrations ficam em:
+
+```text
+src/main/resources/db/migration
+```
+
+A migration inicial `V1__create_initial_schema.sql` cria:
+
+- `tb_usuarios`
+- `tb_servicos`
+- `tb_agendamentos`
+- chave única para `tb_usuarios.email`
+- chaves estrangeiras de agendamento para cliente, barbeiro e serviço
+- índices auxiliares para consultas de agendamento
+
+Em banco limpo, basta rodar a aplicação com o perfil desejado e o Flyway aplicará a migration automaticamente antes da validação do Hibernate.
+
+Em um banco Neon que já possui tabelas criadas anteriormente por `ddl-auto=update`, não apague dados automaticamente. O caminho seguro é:
+
+1. Fazer backup do banco.
+2. Conferir se o schema existente equivale à migration `V1__create_initial_schema.sql`.
+3. Usar baseline do Flyway para registrar o schema existente como versão inicial, sem recriar tabelas.
+4. Só depois manter `ddl-auto=validate` em `dev`/`prod`.
+
+Para ambiente de desenvolvimento descartável, também é possível usar um banco limpo e deixar a migration criar tudo do zero. Não faça isso em produção sem backup.
 
 ## ⚙️ Configuração Local
 
@@ -310,7 +339,7 @@ spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
 
 api.security.token.secret=${API_SECURITY_TOKEN_SECRET}
 
-spring.jpa.hibernate.ddl-auto=update
+spring.jpa.hibernate.ddl-auto=validate
 spring.jpa.show-sql=true
 ```
 
