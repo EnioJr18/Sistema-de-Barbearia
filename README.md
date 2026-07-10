@@ -5,6 +5,7 @@
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.3-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![CI](https://github.com/EnioJr18/Sistema-de-Barbearia/actions/workflows/ci.yml/badge.svg)
 
 API REST backend para gerenciar usuários, serviços e agendamentos de uma barbearia. O projeto foi desenvolvido como prática de backend profissional com foco em regras de negócio, segurança, documentação e operação local reproduzível.
 
