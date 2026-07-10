@@ -39,7 +39,7 @@ Este projeto foi desenvolvido para praticar:
 | Frontend Web | Planejado |
 | App Mobile | Planejado |
 | Swagger/OpenAPI | Implementado |
-| Docker | Planejado |
+| Docker | Implementado |
 | Testes automatizados completos | Planejado |
 
 ## ✅ Funcionalidades Implementadas
@@ -73,7 +73,6 @@ Limitações desta etapa:
 
 - Frontend Web administrativo.
 - Aplicativo Mobile para clientes.
-- Docker e Docker Compose.
 - Testes automatizados mais completos.
 - Algoritmo de horários disponíveis.
 - Cancelamento dedicado de agendamento.
@@ -89,7 +88,6 @@ Limitações desta etapa:
 - Melhorar controle de permissões por perfil.
 - Adicionar testes unitários e de integração.
 - Avaliar Liquibase apenas se houver necessidade futura; o projeto já usa Flyway.
-- Adicionar Docker/Docker Compose.
 - Melhorar tratamento global de exceções.
 - Evitar retorno direto de entidades JPA nas respostas.
 
@@ -117,9 +115,10 @@ Limitações desta etapa:
 - Gradle Kotlin DSL
 - Lombok
 
-### Ferramentas planejadas
+### Ferramentas de apoio e planejadas
 
 - Docker
+- Docker Compose
 - React
 - React Native
 
@@ -407,6 +406,68 @@ Use o token puro se a UI já aplicar o esquema Bearer automaticamente. Se necess
 Bearer <token>
 ```
 
+## Docker e Docker Compose
+
+O projeto possui um `Dockerfile` multi-stage e um `docker-compose.yml` para subir a API com PostgreSQL local.
+
+O Compose usa valores locais ficticios e nao usa credenciais reais do Neon.
+
+Servicos criados:
+
+- `api`: aplicacao Spring Boot em `http://localhost:8080`.
+- `db`: PostgreSQL local do Compose, exposto no host em `localhost:5433`.
+- `barbearia-postgres-data`: volume Docker para persistencia do banco local.
+
+Para subir tudo:
+
+```bash
+docker compose up --build
+```
+
+Se voce ja criou o volume com uma versao anterior deste Compose, recrie-o uma unica vez antes de subir novamente. O PostgreSQL 18 armazena os dados em uma estrutura diferente:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+Ao iniciar em banco limpo, o Flyway roda automaticamente e aplica as migrations em `src/main/resources/db/migration` antes da validacao do Hibernate.
+
+Swagger:
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
+Admin local criado pelo profile Docker:
+
+```text
+email: admin@docker.com
+senha: senha-forte-docker
+```
+
+Exemplo de login:
+
+```bash
+curl -X POST http://localhost:8080/login \
+  -H "Content-Type: application/json" \
+  -d "{\"email\":\"admin@docker.com\",\"senha\":\"senha-forte-docker\"}"
+```
+
+Para parar os containers:
+
+```bash
+docker compose down
+```
+
+Para parar e apagar tambem o volume do banco local:
+
+```bash
+docker compose down -v
+```
+
+Use `docker compose down -v` apenas quando quiser descartar os dados locais do PostgreSQL do Compose.
+
 ## 🧪 Testes
 
 O projeto ainda possui testes mínimos. A cobertura automatizada deve ser ampliada para controllers, services, repositories, segurança e regras de agendamento.
@@ -426,7 +487,6 @@ No Linux, macOS ou Git Bash:
 ## ⚠️ Limitações Atuais
 
 - Este repositório ainda não inclui frontend Web ou Mobile.
-- Docker e Docker Compose ainda não estão implementados.
 - A suíte de testes ainda é básica.
 - O controle de autorização por perfil ainda é parcial.
 - A agenda ainda não calcula horários disponíveis com base na duração do serviço.

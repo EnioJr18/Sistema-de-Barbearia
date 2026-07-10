@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:18-alpine
+    container_name: barbearia-db
+    environment:
+      POSTGRES_DB: barbearia
+      POSTGRES_USER: barbearia
+      POSTGRES_PASSWORD: barbearia
+    ports:
+      - "5433:5432"
+    volumes:
+      - barbearia-postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U barbearia -d barbearia"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: barbearia-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/barbearia
+      SPRING_DATASOURCE_USERNAME: barbearia
+      SPRING_DATASOURCE_PASSWORD: barbearia
+      API_SECURITY_TOKEN_SECRET: segredo-local-docker-bem-grande-para-jwt
+      APP_DEV_ADMIN_ENABLED: "true"
+      APP_DEV_ADMIN_EMAIL: admin@docker.com
+      APP_DEV_ADMIN_SENHA: senha-forte-docker
+      APP_DEV_ADMIN_NOME: Admin Docker
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  barbearia-postgres-data:
